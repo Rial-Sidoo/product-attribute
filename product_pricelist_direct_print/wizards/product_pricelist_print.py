@@ -94,7 +94,10 @@ class ProductPricelistPrint(models.TransientModel):
 
     @api.depends_context("product")
     def _compute_product_price(self):
-        product = self.env.context["product"]
+        product = self.env.context.get("product")
+        if not product:
+            self.product_price = 0.0
+            return
         price = self.get_pricelist_to_print()._get_product_price(
             product, 1, date=self.date
         )
